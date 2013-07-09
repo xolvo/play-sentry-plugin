@@ -4,7 +4,7 @@
 .settings
 eclipse
 lib
-modules
+simple-app/modules
 tmp
 dist
 *.pyc
