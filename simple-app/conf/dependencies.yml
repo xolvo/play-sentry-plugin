@@ -1,0 +1,12 @@
+# Application dependencies
+
+require:
+    - play
+    - ru.purecode -> sentry 0.1
+
+repositories:
+    - purecode:
+        type: local
+        artifact: "${application.path}/../sentry/dist/[module]-[revision].zip"
+        contains:
+            - ru.purecode -> *
