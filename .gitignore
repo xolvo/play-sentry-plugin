@@ -7,3 +7,4 @@ lib
 modules
 tmp
 dist
+*.pyc
