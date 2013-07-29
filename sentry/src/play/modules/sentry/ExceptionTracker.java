@@ -17,6 +17,7 @@ import play.modules.sentry.interfaces.PlayHttpRequestInterface;
 import play.modules.sentry.interfaces.UserInterface;
 import play.mvc.Http.Request;
 
+@Deprecated
 public class ExceptionTracker {
 	private Raven client;
 	

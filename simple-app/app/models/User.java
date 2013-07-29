@@ -15,4 +15,9 @@ public class User extends Model implements UserModel {
 	public String getUsername() {
 		return username;
 	}
+
+	@Override
+	public Object _getId() {
+		return id;
+	}
 }

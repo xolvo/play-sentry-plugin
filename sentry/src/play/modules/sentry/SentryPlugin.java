@@ -7,6 +7,7 @@ import play.PlayPlugin;
 
 public class SentryPlugin extends PlayPlugin {
 	private static Raven raven;
+	private static boolean enabled;
 	
 	@Override
 	public void onApplicationStart() {
@@ -14,9 +15,14 @@ public class SentryPlugin extends PlayPlugin {
 		Dsn dsn = new Dsn(dsn_string);
 		
     	raven = CustomRavenFactory.ravenInstance(dsn);
+    	enabled = Boolean.parseBoolean(Play.configuration.getProperty("sentry.enabled", "true"));
 	}
 	
 	public static Raven raven() {
 		return raven;
+	}
+	
+	public static boolean isEnabled() {
+		return enabled;
 	}
 }
