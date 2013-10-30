@@ -1,4 +1,4 @@
-self: play -> sentry 0.4
+self: play -> sentry 0.4.1
 
 require:
     - play
