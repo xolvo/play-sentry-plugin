@@ -12,7 +12,7 @@ public class UserInterface implements SentryInterface {
 	
 	@Override
 	public String getInterfaceName() {
-		return "sentry.interfaces.User";
+		return "user";
 	}
 
 	public UserModel getUser() {

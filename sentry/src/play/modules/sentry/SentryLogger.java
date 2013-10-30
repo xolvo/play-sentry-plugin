@@ -7,10 +7,10 @@ import java.util.Map;
 import net.kencochrane.raven.Raven;
 import net.kencochrane.raven.event.Event.Level;
 import net.kencochrane.raven.event.EventBuilder;
+import net.kencochrane.raven.event.interfaces.ExceptionInterface;
 import play.Logger;
 import play.modules.sentry.helpers.UserModel;
 import play.modules.sentry.helpers.Utils;
-import play.modules.sentry.interfaces.CustomExceptionInterface;
 import play.modules.sentry.interfaces.PlayHttpRequestInterface;
 import play.modules.sentry.interfaces.UserInterface;
 import play.mvc.Http.Request;
@@ -35,7 +35,7 @@ public class SentryLogger {
 			builder
 				.setCulprit(Utils.determineCulprit(e))
 				.setMessage(e.getMessage())
-				.addSentryInterface(new CustomExceptionInterface(e));
+				.addSentryInterface(new ExceptionInterface(e));
 		}
 		
 		return this;
@@ -116,7 +116,9 @@ public class SentryLogger {
 	}
 	
 	public SentryLogger addExtra(String extra, Object value) {
-		builder.addExtra(extra, value);
+		if(extra != null && value != null)
+			builder.addExtra(extra, value);
+		
 		return this;
 	}
 	

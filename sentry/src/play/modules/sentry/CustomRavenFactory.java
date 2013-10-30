@@ -1,15 +1,12 @@
 package play.modules.sentry;
 
 import net.kencochrane.raven.DefaultRavenFactory;
-import net.kencochrane.raven.Dsn;
 import net.kencochrane.raven.Raven;
+import net.kencochrane.raven.dsn.Dsn;
 import net.kencochrane.raven.marshaller.Marshaller;
 import net.kencochrane.raven.marshaller.json.JsonMarshaller;
-import net.kencochrane.raven.marshaller.json.StackTraceInterfaceBinding;
-import play.modules.sentry.bindings.CustomExceptionInterfaceBinding;
 import play.modules.sentry.bindings.PlayHttpRequestInterfaceBinding;
 import play.modules.sentry.bindings.UserInterfaceBinding;
-import play.modules.sentry.interfaces.CustomExceptionInterface;
 import play.modules.sentry.interfaces.PlayHttpRequestInterface;
 import play.modules.sentry.interfaces.UserInterface;
 
@@ -32,7 +29,6 @@ public class CustomRavenFactory extends DefaultRavenFactory {
 		
 		marshaller.addInterfaceBinding(PlayHttpRequestInterface.class, new PlayHttpRequestInterfaceBinding());
 		marshaller.addInterfaceBinding(UserInterface.class, new UserInterfaceBinding());
-    	marshaller.addInterfaceBinding(CustomExceptionInterface.class, new CustomExceptionInterfaceBinding(new StackTraceInterfaceBinding()));
 		
 		return marshaller;
 	}

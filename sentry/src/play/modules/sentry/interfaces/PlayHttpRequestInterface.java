@@ -4,7 +4,6 @@ import net.kencochrane.raven.event.interfaces.SentryInterface;
 import play.mvc.Http.Request;
 
 public class PlayHttpRequestInterface implements SentryInterface {
-	public static final String HTTP_INTERFACE = "sentry.interfaces.Http";
 	private final Request request;
 	
 	public PlayHttpRequestInterface(Request request) {
@@ -13,7 +12,7 @@ public class PlayHttpRequestInterface implements SentryInterface {
 
 	@Override
 	public String getInterfaceName() {
-		return HTTP_INTERFACE;
+		return "request";
 	}
 	
 	public Request getRequest() {
