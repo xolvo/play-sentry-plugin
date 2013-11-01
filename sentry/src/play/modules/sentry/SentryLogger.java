@@ -65,7 +65,9 @@ public class SentryLogger {
 	}
 	
 	public SentryLogger setUser(UserModel user) {
-		builder.addSentryInterface(new UserInterface(user));
+		if(user != null)
+			builder.addSentryInterface(new UserInterface(user));
+		
 		return this;
 	}
 	
