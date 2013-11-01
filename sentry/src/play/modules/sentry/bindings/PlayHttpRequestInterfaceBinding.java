@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.kencochrane.raven.marshaller.json.InterfaceBinding;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import play.modules.sentry.interfaces.PlayHttpRequestInterface;
@@ -48,7 +49,7 @@ public class PlayHttpRequestInterfaceBinding implements InterfaceBinding<PlayHtt
 		 generator.writeStringField(METHOD, request.method);
 		 
 		 generator.writeFieldName(DATA);
-		 writeData(generator, request.params.data);
+		 writeRequestBodyData(generator, request);
 		 
 		 generator.writeStringField(QUERY_STRING, request.querystring);
 		 
@@ -62,6 +63,17 @@ public class PlayHttpRequestInterfaceBinding implements InterfaceBinding<PlayHtt
 		 writeEnvironment(generator, request);
 		 
 		 generator.writeEndObject();
+	}
+
+	private void writeRequestBodyData(JsonGenerator generator, Request request) throws IOException {
+		if(request == null || request.body == null) {
+            generator.writeNull();
+            return;
+        }
+		
+		generator.writeStartObject();
+		generator.writeStringField("raw_body", IOUtils.toString(request.body, request.encoding));
+		generator.writeEndObject();
 	}
 
 	private void writeEnvironment(JsonGenerator generator, Request request) throws IOException {
@@ -81,13 +93,12 @@ public class PlayHttpRequestInterfaceBinding implements InterfaceBinding<PlayHtt
 
 	private void writeHeaders(JsonGenerator generator, Map<String, Header> headers) throws IOException {
 		generator.writeStartObject();
-        for(String header_key : headers.keySet()) {
-            generator.writeArrayFieldStart(formatHeaderKey(header_key));
-            for (String headerValue : headers.get(header_key).values) {
-                generator.writeString(headerValue);
-            }
-            generator.writeEndArray();
-        }
+		for(String header_key : headers.keySet()) {
+			Header header = headers.get(header_key);
+			
+			generator.writeStringField(formatHeaderKey(header_key),
+	        	StringUtils.join(header.values, ", "));
+		}
         generator.writeEndObject();
 	}
 	
@@ -109,28 +120,9 @@ public class PlayHttpRequestInterfaceBinding implements InterfaceBinding<PlayHtt
         }
 
         generator.writeStartObject();
-        for(String cookie_key : cookies.keySet()) {
-        	Cookie cookie = cookies.get(cookie_key);
-            generator.writeStringField(cookie.name, cookie.value);
-        }
-        
-        generator.writeEndObject();
-	}
-
-	private void writeData(JsonGenerator generator, Map<String, String[]> parameterMap) throws IOException {
-		if(parameterMap == null) {
-            generator.writeNull();
-            return;
-        }
-
-        generator.writeStartObject();
-        for(Map.Entry<String, String[]> parameter : parameterMap.entrySet()) {
-            generator.writeArrayFieldStart(parameter.getKey());
-            for(String parameterValue : parameter.getValue()) {
-                generator.writeString(parameterValue);
-            }
-            generator.writeEndArray();
-        }
+        for(Cookie cookie : cookies.values()) {
+			generator.writeStringField(cookie.name, cookie.value);
+		}
         generator.writeEndObject();
 	}
 }

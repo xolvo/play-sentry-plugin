@@ -15,7 +15,7 @@ public class Application extends Controller {
     		.setUser(user)
     		.setRequest(request)
     		.addExtra("order_id", 234234)
-    		.addExtra("test", null) // will not be logged (no NPE)
+    		.addExtra("test", null)
     		.log();
     	
     	renderText("Exception was logged");
