@@ -2,7 +2,7 @@
 
 require:
     - play
-    - ru.purecode -> sentry 0.5.0
+    - ru.purecode -> sentry 0.6.0
 
 repositories:
     - purecode:
