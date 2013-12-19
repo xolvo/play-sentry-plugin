@@ -1,5 +1,5 @@
-self: play -> sentry 0.5.0
+self: play -> sentry 0.6.0
 
 require:
-    - play [1.2.5,)
+    - play 1.2.5
     - net.kencochrane.raven -> raven 4.1.1

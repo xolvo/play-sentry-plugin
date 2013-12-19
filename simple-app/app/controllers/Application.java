@@ -1,6 +1,7 @@
 package controllers;
 
 import models.User;
+import play.Logger;
 import play.modules.sentry.SentryLogger;
 import play.mvc.Controller;
 
@@ -17,6 +18,8 @@ public class Application extends Controller {
     		.addExtra("order_id", 234234)
     		.addExtra("test", null)
     		.log();
+    	
+    	SentryLogger.debug("The test msg %s", 1);
     	
     	renderText("Exception was logged");
     }

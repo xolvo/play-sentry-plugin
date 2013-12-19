@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.Map;
 
 import net.kencochrane.raven.Raven;
+import net.kencochrane.raven.event.Event;
 import net.kencochrane.raven.event.Event.Level;
 import net.kencochrane.raven.event.EventBuilder;
 import net.kencochrane.raven.event.interfaces.ExceptionInterface;
@@ -18,6 +19,7 @@ import play.mvc.Http.Request;
 public class SentryLogger {
 	private Raven client;
 	private EventBuilder builder;
+	private Throwable exception;
 	
 	protected SentryLogger(Raven client) {
 		this.client = client;
@@ -32,6 +34,8 @@ public class SentryLogger {
 	 */
 	public SentryLogger setException(Throwable e) {
 		if(e != null) {
+			this.exception = e;
+			
 			builder
 				.setCulprit(Utils.determineCulprit(e))
 				.setMessage(e.getMessage())
@@ -131,8 +135,44 @@ public class SentryLogger {
 			Logger.warn(e, "Can not set SERVER_NAME for Raven client");
 		}
 		
+		Event sentry_event = builder.build();
 		if(SentryPlugin.isEnabled())
-			client.sendEvent(builder.build());
+			client.sendEvent(sentry_event);
+		
+		logWithNativeLogger(sentry_event);
+	}
+	
+	private void logWithNativeLogger(Event sentry_event) {
+		Level level = sentry_event.getLevel();
+		String message = sentry_event.getMessage();
+		
+		if(level == null)
+			level = Level.ERROR;
+		
+		switch (level) {
+		case FATAL:
+			Logger.fatal(exception, message);
+			break;
+			
+		case ERROR:
+			Logger.error(exception, message);
+			break;
+			
+		case WARNING:
+			Logger.warn(exception, message);
+			break;
+			
+		case INFO:
+			Logger.info(exception, message);
+			break;
+			
+		case DEBUG:
+			Logger.debug(exception, message);
+			break;
+
+		default:
+			break;
+		}
 	}
 	
 	private static void log(Level level, Throwable e, String culprit, String message, Object... args) {
