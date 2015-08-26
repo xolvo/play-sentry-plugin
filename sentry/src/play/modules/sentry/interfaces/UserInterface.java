@@ -1,12 +1,12 @@
 package play.modules.sentry.interfaces;
 
 import net.kencochrane.raven.event.interfaces.SentryInterface;
-import play.modules.sentry.helpers.UserModel;
+import play.modules.sentry.helpers.User;
 
 public class UserInterface implements SentryInterface {
-	private final UserModel user;
+	private final User user;
 	
-	public UserInterface(UserModel user) {
+	public UserInterface(User user) {
 		this.user = user;
 	}
 	
@@ -15,7 +15,7 @@ public class UserInterface implements SentryInterface {
 		return "user";
 	}
 
-	public UserModel getUser() {
+	public User getUser() {
 		return user;
 	}
 }

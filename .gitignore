@@ -8,3 +8,6 @@ simple-app/modules
 tmp
 dist
 *.pyc
+*.iml
+*.ipr
+*.iws

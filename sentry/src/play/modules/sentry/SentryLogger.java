@@ -1,22 +1,23 @@
 package play.modules.sentry;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Map;
-
 import net.kencochrane.raven.Raven;
 import net.kencochrane.raven.event.Event;
 import net.kencochrane.raven.event.Event.Level;
 import net.kencochrane.raven.event.EventBuilder;
 import net.kencochrane.raven.event.interfaces.ExceptionInterface;
 import play.Logger;
-import play.modules.sentry.helpers.UserModel;
+import play.modules.sentry.helpers.User;
 import play.modules.sentry.helpers.Utils;
 import play.modules.sentry.interfaces.PlayHttpRequestInterface;
 import play.modules.sentry.interfaces.UserInterface;
 import play.mvc.Http.Request;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Map;
+
 public class SentryLogger {
+
 	private Raven client;
 	private EventBuilder builder;
 	private Throwable exception;
@@ -29,7 +30,7 @@ public class SentryLogger {
 	/**
 	 * Set exception and message from this exception
 	 * 
-	 * @param e
+	 * @param e exception
 	 * @return {@link SentryLogger}
 	 */
 	public SentryLogger setException(Throwable e) {
@@ -37,9 +38,9 @@ public class SentryLogger {
 			this.exception = e;
 			
 			builder
-				.setCulprit(Utils.determineCulprit(e))
-				.setMessage(e.getMessage())
-				.addSentryInterface(new ExceptionInterface(e));
+				.withCulprit(Utils.determineCulprit(e))
+				.withMessage(e.getMessage())
+				.withSentryInterface(new ExceptionInterface(e));
 		}
 		
 		return this;
@@ -49,44 +50,44 @@ public class SentryLogger {
 	 * Set only message.
 	 * No need to call it after exception was set
 	 * 
-	 * @param message
+	 * @param message the message
 	 */
 	public SentryLogger setMessage(String message) {
-		builder.setMessage(message);
+		builder.withMessage(message);
 		return this;
 	}
 	
 	public SentryLogger setCulprit(StackTraceElement frame) {
 		if(frame != null)
-			builder.setCulprit(frame.getClassName() + "." + frame.getMethodName());
+			builder.withCulprit(frame.getClassName() + "." + frame.getMethodName());
 		
 		return this;
 	}
 	
 	public SentryLogger setCulprit(String culprit) {
-		builder.setCulprit(culprit);
+		builder.withCulprit(culprit);
 		return this;
 	}
 	
-	public SentryLogger setUser(UserModel user) {
+	public SentryLogger setUser(User user) {
 		if(user != null)
-			builder.addSentryInterface(new UserInterface(user));
+			builder.withSentryInterface(new UserInterface(user));
 		
 		return this;
 	}
 	
 	public SentryLogger setRequest(Request request) {
-		builder.addSentryInterface(new PlayHttpRequestInterface(request));
+		builder.withSentryInterface(new PlayHttpRequestInterface(request));
 		return this;
 	}
 	
 	public SentryLogger setLevel(Level level) {
-		builder.setLevel(level);
+		builder.withLevel(level);
 		return this;
 	}
 	
 	public SentryLogger setLogger(String logger) {
-		builder.setLogger(logger);
+		builder.withLogger(logger);
 		return this;
 	}
 	
@@ -96,7 +97,7 @@ public class SentryLogger {
 				String v = tags.get(tag);
 				
 				if(v != null)
-					builder.addTag(tag, v);
+					builder.withTag(tag, v);
 			}
 		}
 		
@@ -104,7 +105,7 @@ public class SentryLogger {
 	}
 	
 	public SentryLogger addTag(String tag, String value) {
-		builder.addTag(tag, value);
+		builder.withTag(tag, value);
 		return this;
 	}
 	
@@ -114,7 +115,7 @@ public class SentryLogger {
 				Object v = extras.get(extra);
 				
 				if(v != null)
-					builder.addExtra(extra, v);
+					builder.withExtra(extra, v);
 			}
 		}
 		
@@ -123,14 +124,14 @@ public class SentryLogger {
 	
 	public SentryLogger addExtra(String extra, Object value) {
 		if(extra != null && value != null)
-			builder.addExtra(extra, value);
+			builder.withExtra(extra, value);
 		
 		return this;
 	}
 	
 	public void log() {
 		try {
-			builder.setServerName(InetAddress.getLocalHost().getHostName());
+			builder.withServerName(InetAddress.getLocalHost().getHostName());
 		} catch(UnknownHostException e) {
 			Logger.warn(e, "Can not set SERVER_NAME for Raven client");
 		}
@@ -277,4 +278,5 @@ public class SentryLogger {
 	public static void fatal(Throwable e, String message, Object... args) {
 		log(Level.FATAL, e, message, args);
 	}
+
 }

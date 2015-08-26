@@ -1,23 +1,20 @@
 package play.modules.sentry.bindings;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.core.JsonGenerator;
 import net.kencochrane.raven.marshaller.json.InterfaceBinding;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-
 import play.modules.sentry.interfaces.PlayHttpRequestInterface;
 import play.mvc.Http.Cookie;
 import play.mvc.Http.Header;
 import play.mvc.Http.Request;
 import play.templates.JavaExtensions;
 
-import com.fasterxml.jackson.core.JsonGenerator;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class PlayHttpRequestInterfaceBinding implements InterfaceBinding<PlayHttpRequestInterface> {
 	private static final String URL = "url";
@@ -70,10 +67,8 @@ public class PlayHttpRequestInterfaceBinding implements InterfaceBinding<PlayHtt
             generator.writeNull();
             return;
         }
-		
-		generator.writeStartObject();
-		generator.writeStringField("raw_body", IOUtils.toString(request.body, request.encoding));
-		generator.writeEndObject();
+
+		generator.writeString(IOUtils.toString(request.body, request.encoding));
 	}
 
 	private void writeEnvironment(JsonGenerator generator, Request request) throws IOException {
@@ -104,7 +99,7 @@ public class PlayHttpRequestInterfaceBinding implements InterfaceBinding<PlayHtt
 	
 	private String formatHeaderKey(String header) {
 		String[] parts = header.split("-");
-		List<String> args = new ArrayList<String>();
+		List<String> args = new ArrayList<>();
 		
 		for(String part : parts) {
 			args.add(JavaExtensions.capFirst(part));

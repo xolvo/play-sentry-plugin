@@ -2,7 +2,13 @@
 
 require:
     - play
-    - ru.purecode -> sentry 0.6.0
+    - ru.purecode -> sentry 1.0.0
+
+    - org.javassist -> javassist 3.19.0-GA:
+        force: true
+
+    - org.eclipse.jdt.core.compiler -> ecj 4.4.1:
+        force: true
 
 repositories:
     - purecode:
